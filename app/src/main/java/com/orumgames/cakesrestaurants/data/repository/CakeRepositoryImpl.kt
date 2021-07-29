@@ -6,6 +6,8 @@ import com.orumgames.cakesrestaurants.data.mappers.toEntity
 import com.orumgames.cakesrestaurants.data.remote.api.RemoteApi
 import com.orumgames.cakesrestaurants.domain.model.Cake
 import com.orumgames.cakesrestaurants.domain.repository.CakeRepository
+import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 class CakeRepositoryImpl @Inject constructor(
@@ -15,11 +17,16 @@ class CakeRepositoryImpl @Inject constructor(
     override suspend fun findAll(): List<Cake>? {
         var items = dao.findAll()
         if(items.isNullOrEmpty()) {
-            items = api.getCakeList().let { res ->
-                if(res.isSuccessful) {
-                    res.body()?.distinct()?.forEach { dao.insert(it.toEntity()) }
-                    dao.findAll()
-                } else null
+            try {
+                items = api.getCakeList().let { res ->
+                    if(res.isSuccessful) {
+                        res.body()?.distinct()?.forEach { dao.insert(it.toEntity()) }
+                        dao.findAll()
+                    } else null
+                }
+            } catch (ex: Exception) {
+                Timber.e(ex)
+                null
             }
         }
         return items?.sortedBy { it.title }?.map {

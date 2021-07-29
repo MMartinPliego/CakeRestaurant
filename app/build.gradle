@@ -60,6 +60,7 @@ dependencies {
     implementation appDependencies.lifecycleViewModel
     implementation appDependencies.navigationFragment
     implementation appDependencies.navigationUi
+    implementation appDependencies.swiperefresh
 
     //Retrofit
     api appDependencies.retrofit
@@ -70,6 +71,8 @@ dependencies {
     api appDependencies.roomRuntime
     api appDependencies.room
     kapt appDependencies.roomCompiler
+
+    implementation appDependencies.timber
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

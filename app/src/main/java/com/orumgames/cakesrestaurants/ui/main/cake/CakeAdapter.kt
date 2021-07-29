@@ -12,6 +12,7 @@ import com.orumgames.cakesrestaurants.domain.model.Cake
 class CakeAdapter : RecyclerView.Adapter<CakeAdapter.ViewHolder>() {
 
     private lateinit var items: MutableList<Cake>
+    lateinit var onItemClick: (cake: Cake) -> Unit
 
     inner class ViewHolder(private val binding: ItemCakeBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -34,6 +35,12 @@ class CakeAdapter : RecyclerView.Adapter<CakeAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if(::items.isInitialized)
             holder.bind(items[position])
+
+        if(::onItemClick.isInitialized) {
+            holder.itemView.setOnClickListener {
+                onItemClick.invoke(items[position])
+            }
+        }
     }
 
     override fun getItemCount(): Int = if(::items.isInitialized) items.size else 0

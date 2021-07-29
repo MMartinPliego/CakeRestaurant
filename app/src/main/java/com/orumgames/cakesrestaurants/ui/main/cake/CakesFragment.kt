@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.orumgames.cakesrestaurants.databinding.FragmentCakesBinding
 import com.orumgames.cakesrestaurants.di.ViewModelProviderFactory
+import com.orumgames.cakesrestaurants.domain.model.Cake
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -16,7 +17,11 @@ class CakesFragment : DaggerFragment() {
 
     private lateinit var cakesViewModel: CakesViewModel
     private var _binding: FragmentCakesBinding? = null
-    private val adapter: CakeAdapter by lazy { CakeAdapter() }
+    private val adapter: CakeAdapter by lazy {
+        CakeAdapter().apply {
+            onItemClick = ::onCakeClick
+        }
+    }
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
@@ -28,16 +33,39 @@ class CakesFragment : DaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        cakesViewModel = ViewModelProvider(requireActivity(), providerFactory).get(CakesViewModel::class.java)
+        cakesViewModel =
+            ViewModelProvider(requireActivity(), providerFactory).get(CakesViewModel::class.java)
 
         _binding = FragmentCakesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.rvList.adapter = adapter
-        binding.rvList.addItemDecoration(DividerItemDecoration(requireActivity(), LinearLayoutManager.VERTICAL))
+        binding.rvList.addItemDecoration(
+            DividerItemDecoration(
+                requireActivity(),
+                LinearLayoutManager.VERTICAL
+            )
+        )
+
+        binding.swipeContainer.setOnRefreshListener {
+            cakesViewModel.getAllCakes()
+        }
+
+        binding.swipeContainer.setColorSchemeColors(
+            resources.getColor(android.R.color.holo_blue_bright, null),
+            resources.getColor(android.R.color.holo_green_light, null),
+            resources.getColor(android.R.color.holo_orange_light, null),
+            resources.getColor(android.R.color.holo_red_light, null)
+        )
 
         cakesViewModel.cakes.observe(viewLifecycleOwner, {
-            adapter.updateList(it)
+            if(it.isEmpty())
+                binding.txtMsg.visibility = View.VISIBLE
+            else {
+                adapter.updateList(it)
+                binding.txtMsg.visibility = View.GONE
+            }
+            binding.swipeContainer.isRefreshing = false
         })
         return root
     }
@@ -50,5 +78,13 @@ class CakesFragment : DaggerFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun onCakeClick(cake: Cake) {
+        childFragmentManager.let {
+            DetailCakeFragment.newInstance(cake).apply {
+                show(it, DetailCakeFragment.TAG)
+            }
+        }
     }
 }

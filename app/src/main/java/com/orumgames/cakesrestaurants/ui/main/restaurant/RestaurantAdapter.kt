@@ -7,11 +7,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.orumgames.cakesrestaurants.R
 import com.orumgames.cakesrestaurants.databinding.ItemRestaurantBinding
+import com.orumgames.cakesrestaurants.domain.model.Cake
 import com.orumgames.cakesrestaurants.domain.model.Restaurant
 
 class RestaurantAdapter : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
 
     private lateinit var items: MutableList<Restaurant>
+    lateinit var onItemClick: (restaurant: Restaurant) -> Unit
 
     inner class ViewHolder(private val binding: ItemRestaurantBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -35,6 +37,12 @@ class RestaurantAdapter : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if(::items.isInitialized)
             holder.bind(items[position])
+
+        if(::onItemClick.isInitialized) {
+            holder.itemView.setOnClickListener {
+                onItemClick.invoke(items[position])
+            }
+        }
     }
 
     override fun getItemCount(): Int = if(::items.isInitialized) items.size else 0

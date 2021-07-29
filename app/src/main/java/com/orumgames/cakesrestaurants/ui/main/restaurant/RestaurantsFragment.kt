@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.orumgames.cakesrestaurants.databinding.FragmentRestaurantsBinding
 import com.orumgames.cakesrestaurants.di.ViewModelProviderFactory
+import com.orumgames.cakesrestaurants.domain.model.Cake
+import com.orumgames.cakesrestaurants.domain.model.Restaurant
+import com.orumgames.cakesrestaurants.ui.main.cake.DetailCakeFragment
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -17,7 +20,9 @@ class RestaurantsFragment : DaggerFragment() {
 
     private lateinit var restaurantsViewModel: RestaurantsViewModel
     private var _binding: FragmentRestaurantsBinding? = null
-    private val adapter: RestaurantAdapter by lazy { RestaurantAdapter() }
+    private val adapter: RestaurantAdapter by lazy { RestaurantAdapter().apply {
+        onItemClick = ::onRestaurantClick
+    } }
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
@@ -42,8 +47,25 @@ class RestaurantsFragment : DaggerFragment() {
             )
         )
 
+        binding.swipeContainer.setOnRefreshListener {
+            restaurantsViewModel.getAllRestaurants()
+        }
+
+        binding.swipeContainer.setColorSchemeColors(
+            resources.getColor(android.R.color.holo_blue_bright, null),
+            resources.getColor(android.R.color.holo_green_light, null),
+            resources.getColor(android.R.color.holo_orange_light, null),
+            resources.getColor(android.R.color.holo_red_light, null)
+        )
+
         restaurantsViewModel.restaurants.observe(viewLifecycleOwner, {
-            adapter.updateList(it)
+            if(it.isEmpty())
+                binding.txtMsg.visibility = View.VISIBLE
+            else {
+                adapter.updateList(it)
+                binding.txtMsg.visibility = View.GONE
+            }
+            binding.swipeContainer.isRefreshing = false
         })
         return root
     }
@@ -56,5 +78,13 @@ class RestaurantsFragment : DaggerFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun onRestaurantClick(restaurant: Restaurant) {
+        childFragmentManager.let {
+            DetailRestaurantFragment.newInstance(restaurant).apply {
+                show(it, DetailCakeFragment.TAG)
+            }
+        }
     }
 }
