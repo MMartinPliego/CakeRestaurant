@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Cakes &amp; Restaurants</string>
+    <string name="title_cakes">Cakes</string>
+    <string name="title_restaurants">Restaurants</string>
+    <string name="title_activity_splash">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>

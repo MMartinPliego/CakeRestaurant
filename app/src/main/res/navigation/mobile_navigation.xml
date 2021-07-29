@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_cakes">
+
+    <fragment
+        android:id="@+id/navigation_cakes"
+        android:name="com.orumgames.cakesrestaurants.ui.main.cake.CakesFragment"
+        android:label="@string/title_cakes"
+        tools:layout="@layout/fragment_cakes" />
+
+    <fragment
+        android:id="@+id/navigation_restaurants"
+        android:name="com.orumgames.cakesrestaurants.ui.main.restaurant.RestaurantsFragment"
+        android:label="@string/title_restaurants"
+        tools:layout="@layout/fragment_restaurants" />
+
+</navigation>

@@ -1,0 +1,77 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.orumgames.cakesrestaurants"
+        minSdkVersion 23
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    def appDependencies = rootProject.ext.appDependencies
+    //Coroutines
+    implementation appDependencies.coroutinesCore
+    //Dagger2
+    api appDependencies.dagger2
+    kapt appDependencies.dagger2Processor
+    api appDependencies.daggerAndroid
+    api appDependencies.daggerAndroidSupport
+    kapt appDependencies.daggerAndroidProcessor
+
+    api appDependencies.glide
+    kapt appDependencies.glideCompiler
+
+    implementation appDependencies.androdCore
+    implementation appDependencies.appCompat
+    implementation appDependencies.material
+    implementation appDependencies.constraintLayout
+    implementation appDependencies.lifecycleLiveData
+    implementation appDependencies.lifecycleViewModel
+    implementation appDependencies.navigationFragment
+    implementation appDependencies.navigationUi
+
+    //Retrofit
+    api appDependencies.retrofit
+    api appDependencies.retrofitAdapter
+    api appDependencies.gsonConverter
+    api appDependencies.loggingInterceptor
+    //Room
+    api appDependencies.roomRuntime
+    api appDependencies.room
+    kapt appDependencies.roomCompiler
+
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
